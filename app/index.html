@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>MensaTracker</title>
+    <link rel="stylesheet" href="resources/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://kit.fontawesome.com/0afa241793.js"></script>
+    <link rel="stylesheet" type="text/css" href="resources/data/Chart.min.css">
+    <script src="resources/data/Chart.js"></script>
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+</head>
+
+<body>
+    <h1>
+        <img id="logo" src="resources/data/Logo.png"></img>
+        <span>MensaTracker</span>
+    </h1>
+    <header>   
+        <p id="budget"><b>Dein Budget für diesen Monat:</b></p>
+        <div id="moneytracker">
+            <div class="tooltip fa fa-question" style="float: right;">
+                <div class="bottom">
+                    <span><b>Lege ein Budget fest.</b></span>
+                    <p>Klicke auf den &euro;-Button, um Dir ein monatliches Ziel für Deine Ausgaben zu setzen.</p>
+                    <p>
+                        <i class="fa fa-info-circle"></i>
+                        <span>Um Dein Budget zurückzusetzen, gib den Wert "0" an.<span>
+                    </p>
+                </div>
+            </div>
+            <button id="moneytracker-button">
+                <i class="fa fa-eur" aria-hidden="true"></i>
+            </button>
+            <span id="moneytracker-value"></span>
+            <div id="myProgress">
+                <div id="myBar"></div>
+            </div>
+            <div id="moneytracker-input-field">
+            <input type="text" onkeypress="return (event.charCode == 8 || event.charCode == 0 || event.charCode == 13) ? null : event.charCode >= 48 && event.charCode <= 57" id="moneytracker-input" class="hidden" />
+            </div>
+        </div>
+    </header>
+    <nav>
+        <input id="search" type="search" placeholder="Suche...">
+         <button id="filter">Filter
+            <i class="fa fa-caret-down" aria-hidden="true"></i>
+            <div class="dropdown-content">
+                <span id="dropdown-datum" class="dropdown-item">Datum
+                    <i id="datum-icon" class="fa fa-caret-down" aria-hidden="true"></i>
+                </span>
+                <span id="dropdown-preis" class="dropdown-item">Preis
+                    <i id="preis-icon" class="fa fa-caret-down" aria-hidden="true"></i>
+                </span>
+                <span id="dropdown-fleisch" class="dropdown-item">Fleisch</span>
+                <span id="dropdown-gluten" class="dropdown-item">Gluten</span>
+                <span id="dropdown-laktose" class="dropdown-item">Laktose</span>
+            </div>
+        </button>
+        <button id="statistics">Statistiken</button>
+        <button id="clear-list">
+            <i class="fa fa-trash"></i>
+            <span>Alle Einträge löschen</span>
+        </button>
+    </nav>
+    <div id="delete-popup" class="popup hidden">
+        <p>Wollen Sie tatsächlich Ihre gesamten Einträge unwiderruflich löschen?</p>
+        <button id="delete-ok">Ja</button>
+        <button id="delete-cancel">Nein</button>
+    </div>
+    <div class="floatLeft">
+        <p style="font-family: Stencil Std, fantasy"><b>Neuer Eintrag:</b></p>
+        <button id="meal">Menüauswahl</button>
+        <div class="tooltip fa fa-question">
+            <div class="bottom">
+                <span><b>Wähle ein Gericht.</b></span>
+                <p>Klicke hier, um aus dem aktuellen Speiseplan der Mensa die Speise auszuwählen, die Du gegessen hast.</p>
+            </div>
+        </div>
+        <p id="checkedMeal"></p>
+        <div id="rating">
+            <span>Deine Bewertung:</span>
+            <div class="tooltip fa fa-question">
+                <div class="bottom">
+                    <span><b>Bewerte Deine Mahlzeit.</b></span>
+                    <p>Bewerte hier anhand einer 5-Sterne-Skala, wie gut Dir Dein Essen in der Mensa geschmeckt hat.</p>
+                </div>
+            </div>
+            <div class="rating"> 
+                <span class="fa fa-star five"></span>
+                <span class="fa fa-star four"></span>
+                <span class="fa fa-star three"></span>
+                <span class="fa fa-star two"></span>  
+                <span class="fa fa-star one"></span>
+            </div>
+        </div>
+        <div id="mood">
+            <span><br>Dein Wohlbefinden:</span>
+            <div class="tooltip fa fa-question">
+                <div class="bottom">
+                    <span><b>Bewerte Dein Wohlbefinden.</b></span>
+                    <p>Bewerte hier anhand eines Emotes, ob Dein Wohlbefinden an dem Tag Deiner Mahlzeit eher gut, mittelmäßig oder schlecht war.</p>
+                </div>
+            </div>
+            <br><i class="fas fa-frown" id="bad-mood"></i>
+            <i class="fas fa-meh" id="semi-mood"></i>
+            <i class="fas fa-smile-beam" id="good-mood"></i>
+        </div>
+        <div id="entry-buttons">
+            <button id="submit">
+            <i class="fa fa-check" aria-hidden="true"></i>
+            </button>
+            <button id="cancel">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div id="nomeal" class="information">
+            <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
+            <span>Wähle zuerst ein Gericht aus.</span>
+        </div>
+    </div>
+    <div class="floatRight">
+        <span id="entry-counter"></span>
+        <i class="fa fa-eye" aria-hidden="true"></i>
+        <ul class="entry-list">
+            <p id="month-element"></p>
+        </ul>
+        <div id="entry-DeletePopup" class="popup hidden">
+            <span><b>Eintrag löschen?</b></span>
+            <button id="entry-deletePopupButton" class="popupButtonOk">
+                <i class="fa fa-check" aria-hidden="true"></i>
+            </button>
+            <button id="entry-noPopupButton" class="popupButtonNo">
+                 <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        <template id="entry-template">
+
+            <li class="entryMeal" id="meal-entry">
+                <span class="entryRating"></span>
+                <span id="entry-title" class="entryTitle"></span>
+                <span id="entry-price" class="entryPrice"></span>
+                <i class="fa fa-money entryMoneyIcon"></i>
+                <span id="entryDate" class="entryDate"></span>
+                <span id="entryRating" class="entryRating"></span>
+                <span id="entryMood" class="fas entryMood"></span>  
+                <button id="entryDelete" class="entryDelete fa fa-trash"></button>
+                <button id="entryInfo" class="entryInfo fa fa-info-circle"></button>
+            </li>
+        </template>
+        <button id="more" class="hidden">Mehr Einträge...</button>
+    </div>
+    <div id="statistics-popup" class="popup hidden">
+        <canvas id="number-chart"></canvas>
+        <canvas id="money-chart"></canvas>
+        <div id="statistics-rating"> Deine durchschnittliche Gesamtbewertung:
+            <i id="one" class="fa fa-star one"></i>
+            <i id="two" class="fa fa-star two"></i>
+            <i id="three" class="fa fa-star three"></i>
+            <i id="four" class="fa fa-star four"></i>
+            <i id="five" class="fa fa-star five"></i> 
+        </div>
+        <button id="statistics-ok">Ok</button>
+        <p class="note">*in diesem Jahr.</p>
+    </div>
+    <div id="meal-popup" class="popup hidden">
+        <ul class="day-selector">
+            <li class="button" data-day="monday">Montag</li>
+            <li class="button" data-day="tuesday" class="selected">Dienstag</li>
+            <li class="button" data-day="wednesday">Mittwoch</li>
+            <li class="button" data-day="thursday">Donnerstag</li>
+            <li class="button" data-day="friday">Freitag</li>
+        </ul>
+        <div class="daily-menu">
+            <ul class="category" data-category="soup">
+                <li class="label">Suppen</li>
+            </ul>
+            <ul class="category" data-category="main">
+                <li class="label">Hauptgerichte</li>
+            </ul>
+            <ul class="category" data-category="sides">
+                <li class="label">Beilagen</li>
+            </ul>
+            <ul class="category" data-category="dessert">
+                <li class="label">Desserts</li>
+            </ul>
+        </div>
+    </div>
+    <div id="entry-InfoPopup" class="popup hidden">
+        <span><b>Kennzeichnungspflichtige Inhaltstoffe & Allergene:</b></span>
+        <ul class="ingredient-list"></ul>
+        <button id="entry-infoPopupButton" class="hidden"><b>OK</b></button>
+    </div>
+    <footer>
+        Die Inhalte des Speiseplans werden vom <a href="https://stwno.de/de/gastronomie/speiseplan/uni-regensburg/mensa-ur">Studentenwerk Niederbayern/Oberpfalz</a> bereitgestellt.
+    </footer>
+    <script type="text/template" id="menu-entry">
+        <li class="entry hidden" data-id="{{id}}" data-category="{{category}}">
+            {{name}}
+        </li>
+    </script>
+    <script type="module" src="resources/js/index.js"></script>
+</body>
+
+</html>
