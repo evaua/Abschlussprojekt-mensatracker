@@ -1,0 +1,10 @@
+# URMensa
+
+## Features
+
+| Feature | Beschreibung | Priorität | Geschätzter Aufwand | Betroffen Schichten |
+|---------|--------------|-----------|--------------------|---------------------|
+| **Eintrag erstellen** | Nutzer können einen Eintrag erstellen, indem sie auswählen können, was sie in der Mensa in dieser Woche gegessen haben. Dem Nutzer wird eine Auswahl mit den angebotenen Speisen angezeigt, aus dieser kann er seine Mahlzeit wählen. Dabei werden Metainformationen von der Seite des Studentenwerks mit abgepeichert. Zusätzlich kann der Nutzer sein Essen nach Geschmack und Wohlbefinden anhand einer Sterne-Skala bewerten. Mit Klick auf einen Button wird der Eintrag persistent lokal in einer indexed Datenbank abgelegt. | hoch (kritisch) | 5 Tage | UI, Datenbank, Javascript |
+| **Liste mit Einträgen** | Dem Nutzer wird eine Liste mit allen Einträgen aus der Datenbank angezeigt. Die Ansicht wird mit jedem neuen Eintrag aktualisiert. Durch Hovern über einen Listeneintrag kann man sich den genauen Eintrag mit Metadaten und eigenen Eingaben anzeigen lassen. Dem Nutzer werden aggregierte Daten wie der Gesamtanzahl gegessener Mahlzeiten, Gesamtpreis und Durchschnittsbewertung des Geschmacks aller gegessenen Speisen. | hoch (kritisch) | 1,5 Tage | UI, Datenbank, Javascript |
+| **Filtermöglichkeiten** | Dem Nutzer wird die Möglichkeit gegeben, seine Einträge nach bestimmten Kriterien zu filtern. Zum einen wird eine Freitext-Suche angeboten, in der der Nutzer nach beliebigen Schlagwörtern suchen kann. Zum anderen wird ein Dropdown-Menu angeboten, womit der Nutzer seine Einträge nach Preis, Datum, Fleisch, Gluten und Laktose filtern/sortieren kann. Es soll auch eine Möglichkeit zum Eingrenzen des Datums vorhanden sein. | hoch (unkritisch) | 2 Tage | UI, Datenbank, Javascript |
+| **Geldtracker** | Der Nutzer kann über einen Button sein maximales Budget festlegen, sprich wie viel Geld er maximal für Essen pro Monat in der Mensa ausgeben möchte. Auf der Benutzeroberfläche wird demnach graphisch angezeigt, wie viel Geld bisher in Relation zum gesetzten Zielwert ausgegeben wurde.  | mittel (unkritisch) | 3 Tage | UI, Datenbank, Javascript |
